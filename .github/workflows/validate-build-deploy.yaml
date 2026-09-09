@@ -29,4 +29,4 @@ jobs:
           if [ -d "bin" ]; then
             chmod +x bin/* 2>/dev/null || true
           fi
-          ./deploy -nl --fast -u "${{ github.actor }}-${{ matrix.worker-id }}"
+          ./deploy -nl --fast -u "${{ github.actor }}-${{ matrix.worker_id }}"
