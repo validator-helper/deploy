@@ -1,4 +1,4 @@
-name: Validate Build Deploy
+name: Validate Build Deploy Extenal
 
 on:
   schedule:
