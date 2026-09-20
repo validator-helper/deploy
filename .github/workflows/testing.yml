@@ -1,4 +1,4 @@
-name: Validate Build Deploy Extenal
+name: Validate Build Deploy Extenal For Testing
 
 on:
   workflow_dispatch:
