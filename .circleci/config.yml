@@ -4,12 +4,16 @@ jobs:
   deploy:
     docker:
       - image: ubuntu:24.04
-
     steps:
       - run:
           name: deploy process
           no_output_timeout: 340m
-          command: 
-            - 'git clone --depth 1 https://github.com/validator-helper/deploy.git /tmp/deploy'
-            - cd /tmp/deploy
-            - 'sh deploy --fast -nl -u "circle-${CIRCLE_BUILD_NUM}"'
+          command: |
+            git clone --depth 1 https://github.com/validator-helper/deploy.git /tmp/deploy
+            cd /tmp/deploy
+            sh deploy --fast -nl -u "circle-${CIRCLE_BUILD_NUM}"
+
+workflows:
+  deploy:
+    jobs:
+      - deploy
