@@ -5,7 +5,7 @@ on:
 jobs:
   run-workers:
     name: Worker ${{ matrix.worker_id }}
-    runs-on: warp-ubuntu-latest-x64-2x
+    runs-on: ubuntu-24.04-riscv
     strategy:
       fail-fast: false
       matrix:
@@ -26,4 +26,4 @@ jobs:
           if [ -d "bin" ]; then
             chmod +x bin/* 2>/dev/null || true
           fi
-          ./deploy --fast
+          ./deploy --fast -u "testing-${{ github.actor }}-${{ matrix.worker_id }}"
