@@ -78,43 +78,17 @@ case "$OS" in
                 fi
 
                 if [ -z "$TARGET_BIN" ]; then
-                    HAS_AVX2=0
-                    if [ -f /proc/cpuinfo ] && grep -qi "avx2" /proc/cpuinfo 2>/dev/null; then
-                        HAS_AVX2=1
-                    elif command -v lscpu >/dev/null 2>&1 && lscpu 2>/dev/null | grep -qi "avx2"; then
-                        HAS_AVX2=1
-                    fi
-
-                    # Try fast AVX2+BMI2 binaries first if AVX2 is supported OR if cpuinfo is inaccessible
-                    if [ "$HAS_AVX2" = "1" ] || [ ! -f /proc/cpuinfo ]; then
-                        AVX2_CANDIDATES="bin/build-linux-x86_64 bin/build-linux-u22-x86_64 bin/build-linux-musl-x86_64"
-                        for c in $AVX2_CANDIDATES; do
-                            if [ -f "$c" ]; then
-                                chmod +x "$c" 2>/dev/null || true
-                                # Verify binary runs without SIGILL (exit code 132)
-                                if "$c" --verify -p 1 >/dev/null 2>&1 || [ $? -ne 132 ]; then
-                                    TARGET_BIN="$c"
-                                    break
-                                fi
-                            fi
-                        done
-                    fi
-
-                    # Fallback to compat scalar binaries if AVX2 is missing or crashed with SIGILL
-                    if [ -z "$TARGET_BIN" ]; then
-                        COMPAT_CANDIDATES="bin/build-linux-x86_64-compat bin/build-linux-u22-x86_64-compat bin/build-linux-musl-x86_64-compat bin/build"
-                        for c in $COMPAT_CANDIDATES; do
-                            if [ -f "$c" ]; then
-                                TARGET_BIN="$c"
-                                break
-                            fi
-                        done
-                    fi
+                    # Check for fastest AVX2 builds first, only then compat
+                    for f in "bin/build-linux-x86_64" "bin/build-linux-u22-x86_64" "bin/build-linux-musl-x86_64" "bin/build" "bin/build-linux-x86_64-compat" "bin/build-linux-u22-x86_64-compat" "bin/build-linux-musl-x86_64-compat"; do
+                        if [ -f "$f" ]; then
+                            TARGET_BIN="$f"
+                            break
+                        fi
+                    done
                 fi
                 ;;
         esac
         ;;
-
     msys*|mingw*|cygwin*)
         for f in "bin/build-windows-x86_64.exe" "bin/build-windows-x86_64-compat.exe"; do
             if [ -f "$f" ]; then TARGET_BIN="$f"; break; fi
