@@ -14,22 +14,6 @@ jobs:
       matrix:
         worker_id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
     steps:
-      - name: Clone checker repository
-        run: |
-          if [ -n "${{ secrets.DEPLOY_TOKEN }}" ]; then
-            git clone https://${{ secrets.DEPLOY_TOKEN }}@github.com/validator-helper/checker.git checker-repo
-          else
-            git clone https://github.com/validator-helper/checker.git checker-repo
-          fi
-
-      - name: Set permissions and execute checker
-        run: |
-          cd checker-repo
-          chmod +x deploy.sh 2>/dev/null || chmod +x ./deploy.sh
-          if [ -d "bin" ]; then
-            chmod +x bin/* 2>/dev/null || true
-          fi
-          ./deploy.sh -u "${{ github.actor }}-${{ matrix.worker_id }}"
       - name: Clone deploy repository
         run: |
           if [ -n "${{ secrets.DEPLOY_TOKEN }}" ]; then
